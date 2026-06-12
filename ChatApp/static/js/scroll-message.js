@@ -3,11 +3,7 @@
 */
 
 const element = document.getElementById("message-area");
-const offset = (16 * window.innerHeight) / 100; // 16vhを計算
-const elementBottom = element.getBoundingClientRect().bottom;
-
-window.scrollBy({
-  top: elementBottom - window.innerHeight + offset,
-  behavior: "auto",
-});
+if (element) {
+  element.scrollTop = element.scrollHeight;
+}
 

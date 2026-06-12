@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% macro task_status_control(task) %}
+{% set is_assignee = task.assignee_uid is not none and (task.assignee_uid|string == uid|string) %}
+{% if is_assignee %}
+<form action="{{ url_for('task_update_status', task_id=task.id) }}" method="POST" class="task-status-form">
+  <select name="status" class="task-status-select" onchange="this.form.submit()">
+    <option value="not_started" {% if task.status == 'not_started' %}selected{% endif %}>未着手</option>
+    <option value="in_progress" {% if task.status == 'in_progress' %}selected{% endif %}>作業中</option>
+    <option value="review" {% if task.status == 'review' %}selected{% endif %}>レビュー待ち</option>
+    <option value="done" {% if task.status == 'done' %}selected{% endif %}>完了</option>
+  </select>
+</form>
+{% else %}
+<div class="task-status-readonly" title="担当者のみ変更できます">
+  <span class="task-status-readonly-label">{% if task.status == 'not_started' %}未着手{% elif task.status == 'in_progress' %}作業中{% elif task.status == 'review' %}レビュー待ち{% elif task.status == 'done' %}完了{% else %}{{ task.status }}{% endif %}</span>
+</div>
+{% endif %}
+{% endmacro %}
+{% block title %}
+<title>HackChat - タスク管理</title>
+{% endblock %}
+{% block body %}
+<div class="tasks-wrapper">
+  <!-- 全体の進捗（DBの完了数/総数に応じて動的に変化） -->
+  <div class="tasks-progress-section">
+    <p class="tasks-progress-label">全体の進捗: {{ progress_percent }}% ({{ progress_completed }}/{{ progress_total }} 完了)</p>
+    <div class="tasks-progress-bar">
+      <div class="tasks-progress-fill" style="width: {{ progress_percent }}%"></div>
+    </div>
+  </div>
+
+  <!-- メインコンテンツ -->
+  <div class="tasks-main">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class="tasks-flashes">
+      {% for msg in messages %}
+      <li>{{ msg }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    <div class="tasks-header">
+      <h1 class="tasks-title">タスク管理</h1>
+      <div class="tasks-header-actions">
+        <div class="tasks-filter-toggles">
+          <a href="{{ url_for('tasks_view', filter='all') }}" class="tasks-filter-btn {{ 'active' if filter_mode == 'all' else '' }}">すべて</a>
+          <a href="{{ url_for('tasks_view', filter='mine') }}" class="tasks-filter-btn {{ 'active' if filter_mode == 'mine' else '' }}">自分のタスク</a>
+        </div>
+        <button type="button" class="tasks-add-btn" id="tasks-add-btn">
+          <ion-icon name="add-outline"></ion-icon>
+          タスク追加
+        </button>
+      </div>
+    </div>
+
+    <!-- カンバンボード -->
+    <div class="tasks-kanban">
+      <div class="tasks-column tasks-column-not-started">
+        <div class="tasks-column-header">未着手</div>
+        <div class="tasks-column-cards">
+          {% for task in tasks if task.status == 'not_started' %}
+          <div class="task-card">
+            <h3 class="task-card-title">{{ task.title }}</h3>
+            <div class="task-card-assignee">
+              <span class="task-avatar task-avatar-{{ task.assignee_uid|user_color_index }}">
+                {% if task.assignee_avatar_url %}
+                <img src="{{ url_for('static', filename=task.assignee_avatar_url) }}" alt="" class="task-avatar-img">
+                {% else %}
+                {{ (task.assignee_name or '未')[:1] }}
+                {% endif %}
+              </span>
+              <span>{{ task.assignee_name or '未割当' }}</span>
+            </div>
+            <span class="task-tag task-tag-{{ task.tag or 'other' }}">#{{ tag_labels.get(task.tag, 'その他') }}</span>
+            <div class="task-card-meta">
+              {% if task.due_date %}
+              <span class="task-due"><ion-icon name="calendar-outline"></ion-icon> {{ task.due_date.strftime('%Y/%m/%d') }}</span>
+              {% else %}
+              <span class="task-due"></span>
+              {% endif %}
+              <span class="task-status task-status-{{ 'red' if task.due_date and task.due_date < today else ('yellow' if task.due_date and (task.due_date - today).days <= 3 and (task.due_date - today).days >= 0 else 'green') }}"></span>
+            </div>
+            {{ task_status_control(task) }}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="tasks-column tasks-column-in-progress">
+        <div class="tasks-column-header">作業中</div>
+        <div class="tasks-column-cards">
+          {% for task in tasks if task.status == 'in_progress' %}
+          <div class="task-card">
+            <h3 class="task-card-title">{{ task.title }}</h3>
+            <div class="task-card-assignee">
+              <span class="task-avatar task-avatar-{{ task.assignee_uid|user_color_index }}">
+                {% if task.assignee_avatar_url %}
+                <img src="{{ url_for('static', filename=task.assignee_avatar_url) }}" alt="" class="task-avatar-img">
+                {% else %}
+                {{ (task.assignee_name or '未')[:1] }}
+                {% endif %}
+              </span>
+              <span>{{ task.assignee_name or '未割当' }}</span>
+            </div>
+            <span class="task-tag task-tag-{{ task.tag or 'other' }}">#{{ tag_labels.get(task.tag, 'その他') }}</span>
+            <div class="task-card-meta">
+              {% if task.due_date %}
+              <span class="task-due"><ion-icon name="calendar-outline"></ion-icon> {{ task.due_date.strftime('%Y/%m/%d') }}</span>
+              {% else %}
+              <span class="task-due"></span>
+              {% endif %}
+              <span class="task-status task-status-{{ 'red' if task.due_date and task.due_date < today else ('yellow' if task.due_date and (task.due_date - today).days <= 3 and (task.due_date - today).days >= 0 else 'green') }}"></span>
+            </div>
+            {{ task_status_control(task) }}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="tasks-column tasks-column-review">
+        <div class="tasks-column-header">レビュー待ち</div>
+        <div class="tasks-column-cards">
+          {% for task in tasks if task.status == 'review' %}
+          <div class="task-card">
+            <h3 class="task-card-title">{{ task.title }}</h3>
+            <div class="task-card-assignee">
+              <span class="task-avatar task-avatar-{{ task.assignee_uid|user_color_index }}">
+                {% if task.assignee_avatar_url %}
+                <img src="{{ url_for('static', filename=task.assignee_avatar_url) }}" alt="" class="task-avatar-img">
+                {% else %}
+                {{ (task.assignee_name or '未')[:1] }}
+                {% endif %}
+              </span>
+              <span>{{ task.assignee_name or '未割当' }}</span>
+            </div>
+            <span class="task-tag task-tag-{{ task.tag or 'other' }}">#{{ tag_labels.get(task.tag, 'その他') }}</span>
+            <div class="task-card-meta">
+              {% if task.due_date %}
+              <span class="task-due"><ion-icon name="calendar-outline"></ion-icon> {{ task.due_date.strftime('%Y/%m/%d') }}</span>
+              {% else %}
+              <span class="task-due"></span>
+              {% endif %}
+              <span class="task-status task-status-{{ 'red' if task.due_date and task.due_date < today else ('yellow' if task.due_date and (task.due_date - today).days <= 3 and (task.due_date - today).days >= 0 else 'green') }}"></span>
+            </div>
+            {{ task_status_control(task) }}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="tasks-column tasks-column-done">
+        <div class="tasks-column-header">完了</div>
+        <div class="tasks-column-cards">
+          {% for task in tasks if task.status == 'done' %}
+          <div class="task-card">
+            <h3 class="task-card-title">{{ task.title }}</h3>
+            <div class="task-card-assignee">
+              <span class="task-avatar task-avatar-{{ task.assignee_uid|user_color_index }}">
+                {% if task.assignee_avatar_url %}
+                <img src="{{ url_for('static', filename=task.assignee_avatar_url) }}" alt="" class="task-avatar-img">
+                {% else %}
+                {{ (task.assignee_name or '未')[:1] }}
+                {% endif %}
+              </span>
+              <span>{{ task.assignee_name or '未割当' }}</span>
+            </div>
+            <span class="task-tag task-tag-{{ task.tag or 'other' }}">#{{ tag_labels.get(task.tag, 'その他') }}</span>
+            <div class="task-card-meta">
+              {% if task.due_date %}
+              <span class="task-due"><ion-icon name="calendar-outline"></ion-icon> {{ task.due_date.strftime('%Y/%m/%d') }}</span>
+              {% else %}
+              <span class="task-due"></span>
+              {% endif %}
+              <span class="task-status task-status-green"></span>
+            </div>
+            {{ task_status_control(task) }}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% include 'modal/create-task.html' %}
+{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css" />
+{% endblock %}
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/ja.js"></script>
+<script type="module">
+  import { initCreateTaskModal } from "{{ url_for('static', filename='js/tasks/create-task.js') }}";
+  document.addEventListener("DOMContentLoaded", () => initCreateTaskModal());
+</script>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+{% endblock %}

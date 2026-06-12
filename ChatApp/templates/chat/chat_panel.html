@@ -1,0 +1,48 @@
+<div class="chat-panel">
+  <div class="chat-panel-section">
+    <div class="chat-panel-header">
+      <h2 class="chat-panel-title">チャンネル</h2>
+      <button class="chat-panel-add-btn" id="create-channel-button" type="button" aria-label="チャンネル追加">
+        <ion-icon name="add-outline"></ion-icon>
+      </button>
+    </div>
+    <ul class="chat-channel-list">
+      {% for ch in channels %}
+      <li class="chat-channel-item {{ 'active' if current_channel and current_channel.id == ch.id else '' }}">
+        <a href="{{ url_for('detail', cid=ch.id) }}">
+          <span class="chat-channel-name">#{{ ch.name }}</span>
+          {% set unread_count = (channel_unread|default({})).get(ch.id, 0) %}
+          {% if unread_count > 0 %}<span class="chat-channel-badge">{{ unread_count }}</span>{% endif %}
+        </a>
+      </li>
+      {% else %}
+      <li class="chat-channel-item chat-channel-empty">チャンネルがありません</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="chat-panel-section">
+    <h2 class="chat-panel-title">メンバー</h2>
+    <ul class="chat-member-list">
+      {% for m in (members|default([])) %}
+      <li class="chat-member-item">
+        <span class="chat-member-avatar chat-member-avatar-{{ m.uid|user_color_index }}">
+          {% if m.avatar_url %}
+          <img src="{{ url_for('static', filename=m.avatar_url) }}" alt="" class="chat-member-avatar-img">
+          {% else %}
+          {{ (m.user_name or '?')[0] }}
+          {% endif %}
+        </span>
+        <div class="chat-member-info">
+          <span class="chat-member-name">{{ m.user_name }}</span>
+          <span class="chat-member-status">
+            <span class="chat-member-dot chat-member-dot-{{ m.status_color|default('gray') }}"></span>
+            {{ m.status|default('作業中') }}
+          </span>
+        </div>
+      </li>
+      {% else %}
+      <li class="chat-member-item chat-member-empty">メンバーがありません</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>

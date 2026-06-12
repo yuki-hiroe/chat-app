@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>HackChat - 設定</title>
+{% endblock %}
+{% block body %}
+<div class="settings-wrapper">
+  <div class="settings-main">
+    <!-- ヘッダー -->
+    <div class="settings-header">
+      <h1 class="settings-title">設定</h1>
+    </div>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class="settings-flashes">
+      {% for msg in messages %}
+      <li>{{ msg }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    <!-- コンテンツ -->
+    <div class="settings-contents">
+      <!-- プロフィール設定 -->
+      <div class="settings-card">
+        <form action="{{ url_for('update_profile') }}" method="POST" class="settings-profile-form" enctype="multipart/form-data">
+          <div class="settings-card-header">
+            <h2 class="settings-card-title">プロフィール設定</h2>
+            <button type="submit" class="settings-btn settings-btn-primary">
+              プロフィールを更新
+            </button>
+          </div>
+          <div class="settings-card-body settings-profile-body">
+            <div class="settings-avatar-wrap">
+              <div class="settings-avatar" id="settings-avatar-preview">
+                {% if user.avatar_url %}
+                <img src="{{ url_for('static', filename=user.avatar_url) }}" alt="" class="settings-avatar-img">
+                {% else %}
+                <span class="settings-avatar-initial">{{ (user.user_name|default('U'))[0]|upper }}</span>
+                {% endif %}
+              </div>
+              <div class="settings-avatar-actions">
+                <label class="settings-avatar-btn settings-avatar-upload-btn">
+                  <input type="file" name="avatar" accept=".png,.jpg,.jpeg,.gif,.webp" class="settings-avatar-input">
+                  画像を選択
+                </label>
+                {% if user.avatar_url %}
+                <label class="settings-avatar-btn settings-avatar-remove-btn">
+                  <input type="checkbox" name="avatar_remove" value="1" class="settings-avatar-remove-check">
+                  削除
+                </label>
+                {% endif %}
+              </div>
+            </div>
+            <div class="settings-profile-fields">
+              <div class="settings-field">
+                <label for="profile-name">ユーザー名</label>
+                <input type="text" id="profile-name" name="user_name" value="{{ user.user_name|default('') }}" placeholder="ユーザー名" required>
+              </div>
+              <div class="settings-field">
+                <label for="profile-email">メールアドレス</label>
+                <input type="email" id="profile-email" name="email" value="{{ user.email|default('') }}" placeholder="メールアドレス" required>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- ステータス設定 -->
+      <div class="settings-card">
+        <form action="{{ url_for('update_status') }}" method="POST">
+          <h2 class="settings-card-title">ステータス設定</h2>
+          <div class="settings-status-options">
+            <label class="settings-status-option">
+              <input type="radio" name="status" value="working" {{ 'checked' if (user.status|default('working')) == 'working' else '' }}>
+              <span class="settings-status-dot settings-status-green"></span>
+              <span>作業中</span>
+            </label>
+            <label class="settings-status-option">
+              <input type="radio" name="status" value="break" {{ 'checked' if (user.status|default('working')) == 'break' else '' }}>
+              <span class="settings-status-dot settings-status-yellow"></span>
+              <span>休憩中</span>
+            </label>
+            <label class="settings-status-option">
+              <input type="radio" name="status" value="away" {{ 'checked' if (user.status|default('working')) == 'away' else '' }}>
+              <span class="settings-status-dot settings-status-gray"></span>
+              <span>離席中</span>
+            </label>
+            <label class="settings-status-option">
+              <input type="radio" name="status" value="review" {{ 'checked' if (user.status|default('working')) == 'review' else '' }}>
+              <span class="settings-status-dot settings-status-blue"></span>
+              <span>レビュー待ち</span>
+            </label>
+          </div>
+          <button type="submit" class="settings-btn settings-btn-primary settings-status-submit">ステータスを更新</button>
+        </form>
+      </div>
+
+      <!-- パスワード変更 -->
+      <div class="settings-card">
+        <form action="{{ url_for('update_password') }}" method="POST">
+          <h2 class="settings-card-title">パスワード変更</h2>
+          <div class="settings-password-fields">
+            <div class="settings-field">
+              <label for="password-current">現在のパスワード</label>
+              <input type="password" id="password-current" name="current_password" placeholder="現在のパスワード" autocomplete="current-password">
+            </div>
+            <div class="settings-field">
+              <label for="password-new">新しいパスワード</label>
+              <input type="password" id="password-new" name="new_password" placeholder="新しいパスワード" autocomplete="new-password" minlength="6">
+            </div>
+            <div class="settings-field">
+              <label for="password-confirm">パスワードの確認</label>
+              <input type="password" id="password-confirm" name="password_confirm" placeholder="パスワードの確認" autocomplete="new-password">
+            </div>
+          </div>
+          <button type="submit" class="settings-btn settings-btn-primary settings-btn-password">
+            変更する
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+(function(){
+  var input = document.querySelector('.settings-avatar-input');
+  var preview = document.getElementById('settings-avatar-preview');
+  if (input && preview) {
+    input.addEventListener('change', function(){
+      var f = this.files[0];
+      if (f && f.type.startsWith('image/')) {
+        var img = preview.querySelector('.settings-avatar-img');
+        var span = preview.querySelector('.settings-avatar-initial');
+        if (!img) {
+          img = document.createElement('img');
+          img.className = 'settings-avatar-img';
+          img.alt = '';
+          if (span) span.remove();
+          preview.appendChild(img);
+        }
+        img.src = URL.createObjectURL(f);
+      }
+    });
+  }
+})();
+</script>
+{% endblock %}

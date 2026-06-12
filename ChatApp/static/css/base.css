@@ -5,13 +5,48 @@
   font-family: "League Spartan", sans-serif;
   font-size: 16px;
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0 auto;
-  min-height: 100vh;
-  width: 100vw;
+  margin: 0;
+  padding: 0;
+  width: 100%;
   color: var(--carbon);
+  display: flex;
+  flex-direction: column;
+  background-color: var(--tasks-bg);
+}
+
+/* メインコンテンツ領域 - サイドバー（220px）の右側に配置 */
+.app-main {
+  flex: 1;
+  margin-left: 220px;
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-right: 0;
+  min-height: 100vh;
+  min-width: 0;
+}
+
+@media screen and (max-width: 639px) {
+  .app-main {
+    margin-left: 0;
+  }
+}
+
+.app-flashes {
+  list-style: none;
+  padding: 0.75rem 1.5rem;
+  margin: 0;
+  background-color: rgba(34, 197, 94, 0.15);
+  border-bottom: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.app-flashes li {
+  font-size: 14px;
+  color: var(--tasks-text, #e2e8f0);
 }
 
 img {
@@ -20,7 +55,7 @@ img {
 }
 
 h1 {
-  font-size: 40px;
+  font-size: 30px;
   font-weight: 900;
 }
 
@@ -30,6 +65,7 @@ button {
   font-size: inherit;
   border: none;
   outline: none;
+  border-radius: 9999px;
 }
 
 textarea {
@@ -42,6 +78,7 @@ textarea {
 
 input {
   letter-spacing: 0.1em;
+  border-radius: 9999px;
 }
 
 li {
@@ -63,6 +100,28 @@ button {
   border: none;
   padding: 0.7em 3em;
   letter-spacing: 0.1rem;
+}
+
+/* アイコンボタン: 汎用buttonの padding がアイコンを押し出して隠すのを防ぐ */
+.modal-close-btn,
+.modal-input-date-btn,
+.chat-panel-add-btn,
+#add-message-button,
+.delete-message-button {
+  padding: 0;
+}
+
+.chat-send-btn {
+  padding: 0 0.5rem;
+}
+
+/* ion-icon: 色継承と表示を確実にする */
+ion-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  pointer-events: none;
 }
 
 :hover {

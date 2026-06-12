@@ -1,29 +1,53 @@
-<div id="update-channel-modal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h5>Edit Channel</h5>
-      <span class="modalClose" id="update-page-close-button">×</span>
+<div id="update-channel-modal" class="modal" aria-hidden="true">
+  <div class="modal-overlay" id="update-modal-overlay"></div>
+  <div class="modal-content modal-content-dark">
+    <div class="modal-header-dark">
+      <h2 class="modal-title">チャンネル編集</h2>
+      <button type="button" class="modal-close-btn" id="update-modal-close" aria-label="閉じる">
+        <ion-icon name="close" aria-label="閉じる"></ion-icon>
+      </button>
     </div>
-    <form
-      name="updateChannelForm"
-      class="modal-body"
-      action="/channels/update/{{ channel.id }}"
-      method="POST"
-    >
-      <input
-        type="text"
-        placeholder="Channel name"
-        class="channel-form-input"
-        name="channelTitle"
-        required
-      />
-      <input
-        type="text"
-        placeholder="Channel description"
-        class="channel-form-input"
-        name="channelDescription"
-      />
-      <button>EDIT</button>
+    <form name="updateChannelForm" class="modal-body-dark" action="/channels/update/{{ channel.id }}" method="POST">
+      <div class="modal-field">
+        <label for="updateChannelTitle">チャンネル名</label>
+        <input
+          type="text"
+          id="updateChannelTitle"
+          name="channelTitle"
+          class="modal-input"
+          value="{{ channel.name|default('') }}"
+          placeholder="# チャンネル名を入力"
+          required
+        />
+      </div>
+      <div class="modal-field">
+        <label for="updateChannelDescription">説明</label>
+        <textarea
+          id="updateChannelDescription"
+          name="channelDescription"
+          class="modal-textarea"
+          placeholder="チャンネルの説明を入力（任意）"
+          rows="4"
+        >{{ channel.abstract|default('') }}</textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="modal-btn modal-btn-outline update-modal-cancel">キャンセル</button>
+        <button type="submit" class="modal-btn modal-btn-primary">変更を保存</button>
+      </div>
     </form>
+    {% if can_delete_channel|default(false) %}
+    <div class="modal-delete-section">
+      <h3 class="modal-delete-title">チャンネルの削除</h3>
+      <p class="modal-delete-warning">この操作は元に戻せません</p>
+      <form action="/channels/delete/{{ channel.id }}" method="POST" class="modal-delete-form" onsubmit="return confirm('本当に削除しますか？');">
+        <button type="submit" class="modal-btn modal-btn-danger">削除する</button>
+      </form>
+    </div>
+    {% endif %}
   </div>
 </div>
+<script type="module">
+  import { initUpdateChannelModal } from "{{ url_for('static', filename='js/channels/update-channel.js') }}";
+  document.addEventListener("DOMContentLoaded", () => initUpdateChannelModal());
+</script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>HackChat - メンバー</title>
+{% endblock %}
+{% block body %}
+<div class="members-wrapper">
+  <div class="members-main">
+    <div class="members-header">
+      <h1 class="members-title">メンバー</h1>
+      <span class="members-count-badge">{{ members|length }}人</span>
+    </div>
+    <!-- フィルタータブ -->
+    <div class="members-filter">
+      <a href="{{ url_for('members_view', filter='all') }}" class="members-filter-tab {{ 'members-filter-tab-active' if filter_val == 'all' else '' }}">すべて</a>
+      <a href="{{ url_for('members_view', filter='working') }}" class="members-filter-tab {{ 'members-filter-tab-active' if filter_val == 'working' else '' }}">作業中</a>
+      <a href="{{ url_for('members_view', filter='break') }}" class="members-filter-tab {{ 'members-filter-tab-active' if filter_val == 'break' else '' }}">休憩中</a>
+      <a href="{{ url_for('members_view', filter='away') }}" class="members-filter-tab {{ 'members-filter-tab-active' if filter_val == 'away' else '' }}">オフライン</a>
+    </div>
+    <!-- メンバーカードグリッド -->
+    <div class="members-cards">
+      {% for member in (members|default([])) %}
+      <div class="members-card" data-status="{{ member.status_raw|default('working') }}">
+        <div class="members-card-body">
+          <div class="members-card-avatar members-card-avatar-{{ member.uid|user_color_index }}">
+            {% if member.avatar_url %}
+            <img src="{{ url_for('static', filename=member.avatar_url) }}" alt="" class="members-card-avatar-img">
+            {% else %}
+            <span class="members-card-avatar-initial">{{ (member.name or '?')[0]|upper }}</span>
+            {% endif %}
+          </div>
+          <div class="members-card-info">
+            <p class="members-card-name">{{ member.name }}</p>
+            <p class="members-card-status">
+              <span class="members-status-dot members-status-{{ member.status_color|default('gray') }}"></span>
+              {{ member.status }}
+            </p>
+          </div>
+        </div>
+        {% if (member.current_tasks|default([])) or (member.progress_pct|default(0)) > 0 %}
+        <div class="members-card-footer">
+          {% for t in (member.current_tasks|default([])) %}
+          <span class="members-card-task">{{ t.title }}{% if t.task_status %} ({{ t.task_status }}){% endif %}</span>
+          {% endfor %}
+          {% if (member.progress_pct|default(0)) > 0 %}
+          <div class="members-card-progress">
+            <div class="members-card-progress-fill" style="width: {{ member.progress_pct }}%"></div>
+          </div>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

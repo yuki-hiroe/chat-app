@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>HackChat - 進捗ダッシュボード</title>
+{% endblock %}
+{% block body %}
+<div class="dashboard-wrapper">
+  <div class="dashboard-main">
+    <div class="dashboard-header">
+      <h1 class="dashboard-title">進捗ダッシュボード</h1>
+      <span class="dashboard-countdown">タスク {{ (stats|default({})).completed|default(0) }}/{{ (stats|default({})).total|default(0) }} 完了</span>
+    </div>
+
+    <!-- 統計カード -->
+    <div class="dashboard-stats">
+      <div class="dashboard-stat-card dashboard-stat-purple">
+        <ion-icon name="list-outline"></ion-icon>
+        <p class="dashboard-stat-label">総タスク数</p>
+        <p class="dashboard-stat-value">{{ (stats|default({})).total|default(0) }}</p>
+      </div>
+      <div class="dashboard-stat-card dashboard-stat-green">
+        <ion-icon name="checkmark-outline"></ion-icon>
+        <p class="dashboard-stat-label">完了タスク</p>
+        <p class="dashboard-stat-value">{{ (stats|default({})).completed|default(0) }}</p>
+      </div>
+      <div class="dashboard-stat-card dashboard-stat-yellow">
+        <ion-icon name="arrow-forward-outline"></ion-icon>
+        <p class="dashboard-stat-label">進行中</p>
+        <p class="dashboard-stat-value">{{ (stats|default({})).in_progress|default(0) }}</p>
+      </div>
+      <div class="dashboard-stat-card dashboard-stat-red">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        <p class="dashboard-stat-label">ブロック</p>
+        <p class="dashboard-stat-value">{{ (stats|default({})).blocked|default(0) }}</p>
+      </div>
+    </div>
+
+    <!-- 中央2カラム -->
+    <div class="dashboard-middle">
+      <div class="dashboard-widget dashboard-widget-chart">
+        <h3 class="dashboard-widget-title">カテゴリ別タスク完了率</h3>
+        <div class="dashboard-donut-wrap">
+          <div class="dashboard-donut" data-chart-gradient="{{ chart_gradient|default('transparent 0% 100%', true)|e }}">
+            <div class="dashboard-donut-inner">
+              <span class="dashboard-donut-center">総完了: {{ chart_total|default(0) }}%</span>
+            </div>
+          </div>
+          <div class="dashboard-legend">
+            {% for cat in (categories|default([])) %}
+            <div class="dashboard-legend-item">
+              <span class="dashboard-legend-dot" data-dot-color="{{ cat.color|e }}"></span>
+              <span>{{ cat.name }} ({{ cat.share }}% - 完了率{{ cat.percent }}%)</span>
+            </div>
+            {% endfor %}
+            {% if not (categories|default([])) %}
+            <p class="dashboard-legend-empty">タスクがありません</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-widget dashboard-widget-members">
+        <h3 class="dashboard-widget-title">メンバーアクティビティ</h3>
+        <div class="dashboard-member-list">
+          {% for member in (member_activity|default([])) %}
+          <div class="dashboard-member-item">
+            <span class="dashboard-member-avatar dashboard-member-avatar-{{ member.uid|user_color_index }}">
+              {% if member.avatar_url %}
+              <img src="{{ url_for('static', filename=member.avatar_url) }}" alt="" class="dashboard-member-avatar-img">
+              {% else %}
+              {{ member.name[0] if member.name else '?' }}
+              {% endif %}
+            </span>
+            <div class="dashboard-member-info">
+              <span class="dashboard-member-name">{{ member.name }}</span>
+              <span class="dashboard-member-status dashboard-member-status-{{ member.status_color }}">{{ member.status }}</span>
+              <div class="dashboard-member-progress-wrap">
+                <span class="dashboard-member-progress-text">{{ member.done }} / {{ member.total }} タスク</span>
+                <div class="dashboard-member-progress-bar">
+                  <div class="dashboard-member-progress-fill" data-progress-width="{{ ((member.done / member.total * 100)|round(0) if member.total and member.total > 0 else 0) }}"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- 最近のアクティビティ -->
+    <div class="dashboard-widget dashboard-widget-activity">
+      <h3 class="dashboard-widget-title">最近のアクティビティ</h3>
+      <div class="dashboard-activity-timeline">
+        {% for activity in (activities|default([])) %}
+        <div class="dashboard-activity-item">
+          <span class="dashboard-activity-icon dashboard-activity-icon-{{ activity.type }}">
+            {% if activity.type == 'login' %}
+            <ion-icon name="log-in-outline"></ion-icon>
+            {% elif activity.type == 'status_change' %}
+            <ion-icon name="swap-horizontal-outline"></ion-icon>
+            {% elif activity.type == 'message' %}
+            <ion-icon name="chatbubble-outline"></ion-icon>
+            {% elif activity.type == 'task_add' %}
+            <ion-icon name="add-circle-outline"></ion-icon>
+            {% elif activity.type == 'task_status' %}
+            <ion-icon name="swap-horizontal-outline"></ion-icon>
+            {% elif activity.type == 'channel_create' %}
+            <ion-icon name="pricetag-outline"></ion-icon>
+            {% else %}
+            <ion-icon name="create-outline"></ion-icon>
+            {% endif %}
+          </span>
+          <div class="dashboard-activity-content">
+            <p class="dashboard-activity-text">{{ activity.text }}</p>
+            <p class="dashboard-activity-time">{{ activity.time }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+(function(){
+  var el = document.querySelector('.dashboard-donut[data-chart-gradient]');
+  if (el) el.style.background = 'conic-gradient(' + el.dataset.chartGradient + ')';
+  document.querySelectorAll('.dashboard-legend-dot[data-dot-color]').forEach(function(d){
+    d.style.backgroundColor = d.dataset.dotColor;
+  });
+  document.querySelectorAll('.dashboard-member-progress-fill[data-progress-width]').forEach(function(d){
+    d.style.width = d.dataset.progressWidth + '%';
+  });
+})();
+</script>
+{% endblock %}

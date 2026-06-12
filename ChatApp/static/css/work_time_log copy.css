@@ -186,13 +186,13 @@ tr#timelist-style {
 }
 
 th {
-    border: 1px solid rgb(160 160 160);
+    border: 1px solid rgb(160, 160, 160);
     padding: 8px 10px;
     font-size: 13px;
 
 }
 td {
-  border: 1px solid rgb(160 160 160);
+  border: 1px solid rgb(160, 160, 160);
   padding: 8px 10px;
       font-weight: lighter;
 

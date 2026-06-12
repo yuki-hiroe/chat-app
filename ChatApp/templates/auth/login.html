@@ -1,58 +1,54 @@
-{% extends 'auth/base.html' %} {% block title %}
-<title>login</title>
-{% endblock %} {% block body %}
+{% extends 'auth/base.html' %}
+{% block title %}
+<title>HackChat - ログイン</title>
+{% endblock %}
+{% block body %}
 <div class="auth-wrapper">
-  <div class="auth-container">
-    <img
-      src="{{ url_for('static',filename='img/auth.png') }}"
-      class="auth-main-pic"
-    />
-    <img
-      src="{{ url_for('static',filename='img/mobile-auth.png') }}"
-      class="auth-mobile-pic"
-    />
-    <div class="auth-form-wrapper">
-      <div class="auth-logo">
-        <img
-          src="{{ url_for('static',filename='img/plaudern-logo.png') }}"
-          alt="logo"
-        />
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <ul class="auth-flashes">
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% endwith %}
+  <div class="auth-cards">
+    <!-- ログイン -->
+    <div class="auth-card">
+      <div class="auth-card-header">
+        <h1 class="auth-card-title">
+          <ion-icon name="flash" class="auth-logo-icon"></ion-icon>
+          HackChat
+        </h1>
+        <p class="auth-card-description">ハッカソンチームの進捗管理チャット</p>
       </div>
-      <form class="auth-form" method="post">
-        <h1 class="auth-title">WELCOME BACK!</h1>
-        <div>
-          <label for="email-input">Email</label>
+      <form class="auth-form" method="post" action="{{ url_for('login_process') }}">
+        <div class="auth-form-item">
           <input
-            type="text"
-            placeholder="Email"
+            class="auth-form-input"
+            type="email"
             name="email"
-            id="email-input"
+            id="login-email"
+            placeholder="メールアドレス"
           />
         </div>
-        <div>
-          <label for="password-input">Password</label>
+        <div class="auth-form-item">
           <input
+            class="auth-form-input"
             type="password"
-            placeholder="Password"
             name="password"
-            id="password-input"
+            id="login-password"
+            placeholder="パスワード"
           />
         </div>
         <div class="auth-button-container">
-          {% with messages = get_flashed_messages() %} {% if messages %}
-          <ul class="flashes">
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-          </ul>
-          {% endif %} {% endwith %}
-          <button class="auth-button pink">LOGIN</button>
-          <a class="switch-auth-mode" href="{{ url_for('signup_view') }}">
-            登録はこちら
-          </a>
+          <button class="auth-button auth-button-gradient" type="submit">ログイン</button>
+          <a class="switch-auth-mode" href="{{ url_for('signup_view') }}">アカウントを作成</a>
         </div>
       </form>
     </div>
   </div>
 </div>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 {% endblock %}

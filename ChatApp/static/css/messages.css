@@ -51,7 +51,8 @@
 #message-area {
   min-height: 77vh;
   width: 100%;
-  padding-top: 10vh;
+  margin: 0;
+  padding-top: 5vh;
   padding-right: 20px;
   padding-left: 20px;
   overflow-y: scroll;
@@ -59,7 +60,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-  margin-bottom: 16vh;
+  /* margin-bottom: 16vh; */
   scroll-margin-bottom: 16vh;
 }
 
@@ -84,6 +85,7 @@
 
 .delete-message-button {
   background-color: var(--snow);
+  color: var(--navy_blue);
   height: 40px;
   width: 40px;
   line-height: 47px;
@@ -187,6 +189,7 @@
 
 #add-message-button {
   background-color: var(--navy_blue);
+  color: var(--snow);
   height: 100%;
   width: 40px;
   padding: 0;

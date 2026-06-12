@@ -1,0 +1,385 @@
+/* タスク管理ページ - カンバンボード ダークテーマ */
+
+.tasks-wrapper {
+  min-height: 100vh;
+  background-color: var(--tasks-bg);
+  padding: 1rem 1.25rem;
+}
+
+@media screen and (max-width: 639px) {
+  .tasks-wrapper {
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* フラッシュメッセージ */
+.tasks-flashes {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+}
+.tasks-flashes li {
+  padding: 0.75rem 1rem;
+  background-color: rgba(34, 197, 94, 0.2);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  border-radius: 8px;
+  color: var(--tasks-text);
+  font-size: 14px;
+}
+
+/* 全体の進捗 */
+.tasks-progress-section {
+  margin-bottom: 1.25rem;
+}
+
+.tasks-progress-label {
+  text-align: center;
+  color: var(--tasks-text);
+  font-size: 14px;
+  margin: 0 0 0.5rem 0;
+}
+
+.tasks-progress-bar {
+  height: 8px;
+  background-color: var(--tasks-progress-bg);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.tasks-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--auth-gradient-start), var(--auth-gradient-end));
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+/* メインコンテンツ */
+.tasks-main {
+  max-width: 100%;
+  margin: 0;
+}
+
+.tasks-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.tasks-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--tasks-text);
+}
+
+.tasks-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.tasks-filter-toggles {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tasks-filter-btn {
+  padding: 0.5rem 1rem;
+  font-size: 14px;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  background-color: var(--tasks-filter-inactive);
+  color: var(--tasks-text-muted);
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.tasks-filter-btn.active {
+  background-color: var(--tasks-filter-active);
+  color: var(--tasks-text);
+}
+
+.tasks-filter-btn:hover:not(.active) {
+  background-color: var(--tasks-filter-hover);
+}
+
+.tasks-add-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--snow);
+  background: linear-gradient(90deg, var(--auth-gradient-start), var(--auth-gradient-end));
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.tasks-add-btn:hover {
+  opacity: 0.9;
+}
+
+.tasks-add-btn ion-icon {
+  font-size: 18px;
+}
+
+/* カンバンボード */
+.tasks-kanban {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  min-height: 400px;
+}
+
+.tasks-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background-color: var(--tasks-column-bg);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.tasks-column-header {
+  padding: 1rem 1.25rem;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--snow);
+  border-radius: 12px 12px 0 0;
+}
+
+.tasks-column-not-started .tasks-column-header {
+  background-color: #3d4b5c;
+}
+
+.tasks-column-in-progress .tasks-column-header {
+  background-color: #2563eb;
+}
+
+.tasks-column-review .tasks-column-header {
+  background-color: #d97706;
+}
+
+.tasks-column-done .tasks-column-header {
+  background-color: #059669;
+}
+
+.tasks-column-cards {
+  flex: 1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-y: auto;
+}
+
+/* タスクカード */
+.task-card {
+  padding: 1rem;
+  background-color: var(--tasks-card-bg);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.task-card-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--tasks-text);
+  line-height: 1.4;
+}
+
+.task-card-assignee {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 12px;
+  color: var(--tasks-text-muted);
+}
+
+.task-avatar {
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--snow);
+  border-radius: 50%;
+}
+
+.task-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.task-avatar-0 { background-color: #22c55e; }
+.task-avatar-1 { background-color: #3b82f6; }
+.task-avatar-2 { background-color: #8b5cf6; }
+.task-avatar-3 { background-color: #eab308; }
+.task-avatar-4 { background-color: #f97316; }
+.task-avatar-5 { background-color: #ec4899; }
+.task-avatar-6 { background-color: #6b7280; }
+
+.task-tag {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 9999px;
+  width: fit-content;
+}
+
+.task-tag-backend {
+  background-color: rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+.task-tag-frontend {
+  background-color: rgba(59, 130, 246, 0.3);
+  color: #93c5fd;
+}
+
+.task-tag-doc {
+  background-color: rgba(234, 179, 8, 0.3);
+  color: #fde047;
+}
+
+.task-tag-design {
+  background-color: rgba(34, 197, 94, 0.3);
+  color: #86efac;
+}
+
+.task-tag-prototype {
+  background-color: rgba(156, 163, 175, 0.3);
+  color: #d1d5db;
+}
+
+.task-tag-other {
+  background-color: rgba(249, 115, 22, 0.3);
+  color: #fdba74;
+}
+
+.task-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--tasks-text-muted);
+}
+
+.task-due {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.task-due ion-icon {
+  font-size: 14px;
+}
+
+.task-status {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.task-status-red {
+  background-color: #ef4444;
+}
+
+.task-status-yellow {
+  background-color: #eab308;
+}
+
+.task-status-green {
+  background-color: #22c55e;
+}
+
+/* ステータス変更フォーム */
+.task-status-form {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.task-status-select {
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  font-size: 12px;
+  background-color: var(--tasks-card-bg, #1e293b);
+  border: 1px solid var(--auth-border, #3d3e4a);
+  border-radius: 6px;
+  color: var(--tasks-text, #e2e8f0);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.task-status-select:hover,
+.task-status-select:focus {
+  outline: none;
+  border-color: var(--auth-gradient-start, #7c3aed);
+}
+
+.task-status-readonly {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.task-status-readonly-label {
+  display: block;
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  font-size: 12px;
+  font-weight: 500;
+  background-color: var(--tasks-card-bg, #1e293b);
+  border: 1px solid var(--auth-border, #3d3e4a);
+  border-radius: 6px;
+  color: var(--tasks-text, #e2e8f0);
+  line-height: 1.4;
+}
+
+/* ========================================================== */
+/* レスポンシブ */
+
+@media screen and (max-width: 1200px) {
+  .tasks-kanban {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 639px) {
+  .tasks-kanban {
+    grid-template-columns: 1fr;
+  }
+
+  .tasks-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tasks-header-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .tasks-add-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

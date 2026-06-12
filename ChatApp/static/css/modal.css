@@ -1,165 +1,272 @@
-/* 各モーダルのCSS */
+/* モーダル - ダークテーマ モックアップ準拠 */
 
 .modal {
   position: fixed;
-  z-index: 20;
+  z-index: 200;
   left: 0;
   top: 0;
-  height: 100%;
   width: 100%;
-  overflow: auto;
-  background-color: rgba(240, 240, 240, 0.85);
+  height: 100%;
+  display: none;
   justify-content: center;
   align-items: center;
+  padding: 1rem;
 }
 
-#create-channel-modal,
-#update-channel-modal,
-#delete-channel-modal {
-  display: none;
-}
-
-.modal-content {
-  background-color: var(--navy);
-  margin: 20% auto;
-  width: 70%;
-  border: 12px solid var(--navy_blue);
-  box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17);
-  animation-name: modalopen;
-  animation-duration: 1s;
-  position: relative;
-}
-
-@keyframes modalopen {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.modal-header h1 {
-  margin: 1rem 0;
-}
-
-.modal-header {
-  background: var(--ash_grey);
-  padding: 3px 15px 3px 32px;
-  color: var(--navy);
+.modal.modal-open {
   display: flex;
-  justify-content: space-between;
 }
 
-.modal-header h5,
-.modal-header span {
-  z-index: 4;
-}
-
-.modalClose {
-  font-size: 2rem;
-}
-
-.modalClose:hover {
+.modal-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
   cursor: pointer;
 }
 
-.modal-body {
-  padding: 10px 20px;
+.modal-content {
+  position: relative;
+  z-index: 201;
+  width: 100%;
+  max-width: 480px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+  animation: modalFadeIn 0.2s ease;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ダークテーマモーダル */
+.modal-content-dark {
+  background-color: var(--tasks-card-bg, #1a1d26);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-header-dark {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--tasks-text, #e2e8f0);
+}
+
+.modal-close-btn {
+  width: 36px;
+  height: 36px;
+  z-index: 201;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--salmon_pink);
+  border: none;
+  border-radius: 50%;
+  color: var(--snow);
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+}
+
+.modal-close-btn:hover {
+  background-color: var(--middle_pink);
+  color: var(--tasks-text, #e2e8f0);
+}
+
+.modal-close-btn ion-icon {
+  font-size: 24px;
+}
+
+.modal-body-dark {
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  color: var(--snow);
-  border-radius: 0 0 20px 20px;
+  gap: 1.25rem;
 }
 
-.channel-form-input {
-  width: 70%;
-  background-color: transparent;
-  margin-top: 8px;
-  margin-bottom: 20px;
-  padding: 0.5rem;
-  color: var(--snow);
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.channel-form-input::placeholder {
-  color: var(--snow);
-  font-size: 12px;
+.modal-field label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--tasks-text-muted, #94a3b8);
 }
 
-.channel-form-input:hover {
-  background-color: var(--navy_blue);
-  color: var(--snow);
-}
-
-.channel-form-input:focus {
-  background-color: var(--navy_blue);
-  color: var(--snow);
-}
-
-.modal-gif {
-  position: absolute;
-  z-index: 2;
-  top: -65px;
-  left: 30%;
-}
-
-.modal-body p,
-.modal-body a {
-  width: 70%;
-}
-
-.modal-body button {
-  width: 70%;
-  background-color: var(--salmon_pink);
-}
-
-#delete-channel-confirmation-button {
+.modal-input,
+.modal-textarea {
   width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: var(--auth-input-bg, #232430);
+  border: 1px solid var(--auth-border, #3d3e4a);
+  border-radius: 10px;
+  color: var(--tasks-text, #e2e8f0);
+  font-size: 14px;
+  transition: border-color 0.2s;
 }
 
-.modal-body button:hover {
-  background-color: var(--middle_pink);
+.modal-input::placeholder,
+.modal-textarea::placeholder {
+  color: var(--tasks-text-muted, #94a3b8);
 }
 
-/* ========================================================== */
-/* レスポンシブ */
+.modal-input:focus,
+.modal-textarea:focus {
+  outline: none;
+  border-color: var(--auth-gradient-start, #7c3aed);
+}
+
+.modal-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.modal-input-date-wrap {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.modal-input-date-wrap .modal-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.modal-input-date-btn {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--auth-input-bg, #232430);
+  border: 1px solid var(--auth-border, #3d3e4a);
+  border-radius: 10px;
+  color: var(--tasks-text-muted, #94a3b8);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-input-date-btn:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--tasks-text, #e2e8f0);
+  border-color: var(--auth-gradient-start, #7c3aed);
+}
+
+.modal-input-date-btn ion-icon {
+  font-size: 20px;
+}
+
+/* 削除セクション */
+.modal-delete-section {
+  margin: 0 1.5rem 1.5rem 1.5rem;
+  padding: 1rem;
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 12px;
+}
+
+.modal-delete-title {
+  margin: 0 0 0.25rem 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #f87171;
+}
+
+.modal-delete-warning {
+  margin: 0 0 0.75rem 0;
+  font-size: 12px;
+  color: #fca5a5;
+}
+
+/* フッター・ボタン */
+.modal-footer {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+  padding-bottom: 1rem;
+  margin-top: 0.25rem;
+}
+
+.modal-btn {
+  padding: 0.6rem 1.25rem;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modal-btn-outline {
+  background: transparent;
+  border: 1px solid var(--tasks-filter-inactive, #3d3e4a);
+  color: var(--tasks-text, #e2e8f0);
+}
+
+.modal-btn-outline:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: var(--tasks-filter-hover, #4d4e5a);
+}
+
+.modal-btn-primary {
+  background: linear-gradient(135deg, var(--auth-gradient-start, #7c3aed), var(--auth-gradient-end, #3b82f6));
+  border: none;
+  color: var(--snow, #fff);
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
+}
+
+.modal-btn-primary:hover {
+  opacity: 0.9;
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+}
+
+.modal-btn-danger {
+  background: transparent;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+}
+
+.modal-btn-danger:hover {
+  background-color: rgba(239, 68, 68, 0.15);
+}
+
+/* モーダル表示制御 */
+#create-channel-modal,
+#update-channel-modal,
+#create-task-modal {
+  display: none;
+}
+
+#create-channel-modal.modal-open,
+#update-channel-modal.modal-open,
+#create-task-modal.modal-open {
+  display: flex !important;
+}
 
 @media screen and (max-width: 639px) {
   .modal-content {
-    margin: 35% auto;
-    width: 95%;
-  }
-  #modal-gif {
-    display: none;
-  }
-}
-
-@media only screen and (min-width: 640px) and (max-width: 670px) {
-  .modal-content {
-    width: 95%;
-  }
-  .modal {
-    padding-left: 60px;
-  }
-}
-@media only screen and (min-width: 671px) and (max-width: 1024px) {
-  .modal-content {
-    width: 80%;
-  }
-  .modal {
-    padding-left: 60px;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .modal-content {
-    width: 70%;
-  }
-}
-
-@media screen and (min-width: 1025px) {
-  .modal-content {
-    width: 50%;
+    max-width: 95%;
   }
 }

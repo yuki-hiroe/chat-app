@@ -1,13 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-<head>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/signup.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/work_time_log.css') }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block title %}{% endblock %}
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" />
+    {% assets "css_all" %}
+    <link rel="stylesheet" href="{{ ASSET_URL }}" />
+    {% endassets %}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;900&family=M+PLUS+1:wght@200&display=swap" rel="stylesheet" />
+    {% block head %}{% endblock %}
   </head>
   <body>
-    {% include 'util/sidebar.html'%} {% include 'util/mobile-header.html'%} {%
-    block body %}{% endblock %} {% block script %}{% endblock %}
+    {% include 'util/sidebar.html' %}
+    {% include 'util/mobile-header.html' %}
+    <main class="app-main">
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <ul class="app-flashes">
+        {% for msg in messages %}
+        <li>{{ msg }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+      {% endwith %}
+      {% block body %}{% endblock %}
+    </main>
+    {% block script %}{% endblock %}
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
   </body>
 </html>

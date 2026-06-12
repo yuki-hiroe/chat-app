@@ -8,4 +8,39 @@
   --navy_blue: #122543;
   --salmon_pink: #f57978;
   --middle_pink: #f45554;
+  /* 認証ページ用 ダークテーマ */
+  --auth-bg: #1a1b26;
+  --auth-card-bg: #2d2e3a;
+  --auth-input-bg: #232430;
+  --auth-border: #3d3e4a;
+  --auth-text: #ffffff;
+  --auth-text-muted: #9a9aaa;
+  --auth-gradient-start: #7c3aed;
+  --auth-gradient-end: #3b82f6;
+  /* タスク管理ページ用 */
+  --tasks-bg: #1a1b26;
+  --tasks-text: #ffffff;
+  --tasks-text-muted: #9a9aaa;
+  --tasks-column-bg: #232430;
+  --tasks-card-bg: #2d2e3a;
+  --tasks-progress-bg: #232430;
+  --tasks-filter-active: #2d2e3a;
+  --tasks-filter-inactive: #3d3e4a;
+  --tasks-filter-hover: #4d4e5a;
+  /* チャット画面用 ダークテーマ */
+  --chat-sidebar-bg: #1a1a2e;
+  --chat-panel-bg: #16213e;
+  --chat-main-bg: #0f0f1a;
+  --chat-accent: #8b2be2;
+  --chat-accent-light: #a855f7;
+  --chat-text: #ffffff;
+  --chat-text-muted: #9ca3af;
+  /* ダッシュボード用 */
+  --dashboard-stat-purple: #8b5cf6;
+  --dashboard-stat-green: #22c55e;
+  --dashboard-stat-yellow: #eab308;
+  --dashboard-stat-red: #ef4444;
+  --dashboard-donut-frontend: #8b5cf6;
+  --dashboard-donut-backend: #22c55e;
+  --dashboard-donut-design: #3b82f6;
 }

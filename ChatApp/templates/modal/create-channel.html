@@ -1,29 +1,43 @@
-<div id="create-channel-modal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h5>Add channel</h5>
-      <span class="modalClose" id="add-page-close-button">×</span>
+<div id="create-channel-modal" class="modal" aria-hidden="true">
+  <div class="modal-overlay" id="create-modal-overlay"></div>
+  <div class="modal-content modal-content-dark">
+    <div class="modal-header-dark">
+      <h2 class="modal-title">新規チャンネル作成</h2>
+      <button type="button" class="modal-close-btn" id="create-modal-close" aria-label="閉じる">
+        <ion-icon name="close" aria-label="閉じる"></ion-icon>
+      </button>
     </div>
-    <form
-      name="createChannelForm"
-      class="modal-body"
-      action="/channels"
-      method="POST"
-    >
-      <input
-        type="text"
-        placeholder="Channel name"
-        class="channel-form-input"
-        name="channelTitle"
-        required
-      />
-      <input
-        type="text"
-        placeholder="Channel description"
-        class="channel-form-input"
-        name="channelDescription"
-      />
-      <button>登録</button>
+    <form name="createChannelForm" class="modal-body-dark" action="/channels" method="POST">
+      <div class="modal-field">
+        <label for="channelTitle">チャンネル名</label>
+        <input
+          type="text"
+          id="channelTitle"
+          name="channelTitle"
+          class="modal-input"
+          placeholder="# チャンネル名を入力"
+          required
+        />
+      </div>
+      <div class="modal-field">
+        <label for="channelDescription">説明</label>
+        <textarea
+          id="channelDescription"
+          name="channelDescription"
+          class="modal-textarea"
+          placeholder="チャンネルの説明を入力（任意）"
+          rows="4"
+        ></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="modal-btn modal-btn-outline create-modal-cancel">キャンセル</button>
+        <button type="submit" class="modal-btn modal-btn-primary">作成する</button>
+      </div>
     </form>
   </div>
 </div>
+<script type="module">
+  import { initCreateChannelModal } from "{{ url_for('static', filename='js/channels/create-channel.js') }}";
+  document.addEventListener("DOMContentLoaded", () => initCreateChannelModal());
+</script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>

@@ -1,52 +1,34 @@
-{% extends 'base.html' %} {% block title %}
-<title>home</title>
-{% endblock %} {% block body %}
-<div class="main-container">
-  <div class="channel-title">
-    <h1>CHANNELS</h1>
-    <p class="channel-title-text">CHANNELS</p>
-  </div>
-  <div id="channels-list">
-    <div id="pagination-wrapper">
-      <div>
-        <div class="pagination-container">
-          <p id="prev">
-            <
-            <span>PREV</span>
-          </p>
-          <ul class="pagination"></ul>
-          <p id="next">
-            <span>NEXT</span>
-            >
-          </p>
-        </div>
+{% extends 'base.html' %}
+{% block title %}
+<title>HackChat - チャンネル</title>
+{% endblock %}
+{% block body %}
+<div class="chat-layout">
+  {% include 'chat/chat_panel.html' %}
+  <div class="chat-main">
+    <div class="chat-welcome">
+      <div class="chat-welcome-header">
+        <ion-icon name="pricetag-outline" class="chat-welcome-icon"></ion-icon>
+        <h1 class="chat-welcome-title">#{{ channels[0].name if channels else 'チャンネル' }}</h1>
       </div>
+      <p class="chat-welcome-desc">
+        {{ channels[0].abstract if channels and channels[0].abstract else 'ハッカソン全体の重要な連絡事項や告知を行うチャンネルです。' }}
+      </p>
+      <h2 class="chat-welcome-message">ようこそ、#{{ channels[0].name if channels else 'チャンネル' }} チャンネルへ!</h2>
+      <p class="chat-welcome-text">
+        このチャンネルでは、ハッカソンの進行状況、重要なアナウンス、チーム全体への連絡が投稿されます。最新の情報をチェックして、スムーズに開発を進めましょう!
+      </p>
+      {% if not channels %}
+      <p class="chat-welcome-hint">左の「+」ボタンからチャンネルを作成してください。</p>
+      {% endif %}
     </div>
-    <ul class="channel-box"></ul>
   </div>
-  <div id="footer">
-    <p id="footer-text">PLAUDERN FROM RARETECH</p>
-  </div>
-  {% include 'modal/create-channel.html' %} {% include
-  'modal/delete-channel.html' %}
 </div>
-{% endblock %} {% block script %}
-<script type="text/javascript">
-  // prettier-ignore
-  const channels = JSON.parse('{{ channels|tojson }}');
-  // prettier-ignore
-  const uid = JSON.parse('{{ uid|tojson }}');
+{% include 'modal/create-channel.html' %}
+{% endblock %}
+{% block script %}
+<script type="module">
+  import { initCreateChannelModal } from "{{ url_for('static', filename='js/channels/create-channel.js') }}";
+  document.addEventListener("DOMContentLoaded", () => initCreateChannelModal());
 </script>
-<script
-  src="{{url_for('static',filename='js/channels/create-channel.js')}}"
-  type="module"
-></script>
-<script
-  src="{{url_for('static',filename='js/pagination.js')}}"
-  type="module"
-></script>
-<script
-  src="{{url_for('static',filename='js/channels/delete-channel.js')}}"
-  type="module"
-></script>
 {% endblock %}

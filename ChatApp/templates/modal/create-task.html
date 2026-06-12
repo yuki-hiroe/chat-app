@@ -1,0 +1,73 @@
+<div id="create-task-modal" class="modal" aria-hidden="true">
+  <div class="modal-overlay" id="create-task-modal-overlay"></div>
+  <div class="modal-content modal-content-dark">
+    <div class="modal-header-dark">
+      <h2 class="modal-title">タスク追加</h2>
+      <button type="button" class="modal-close-btn" id="create-task-modal-close" aria-label="閉じる">
+        <ion-icon name="close" aria-label="閉じる"></ion-icon>
+      </button>
+    </div>
+    <form name="createTaskForm" class="modal-body-dark" action="/tasks" method="POST">
+      <div class="modal-field">
+        <label for="taskTitle">タイトル</label>
+        <input
+          type="text"
+          id="taskTitle"
+          name="title"
+          class="modal-input"
+          placeholder="タスクのタイトルを入力"
+          required
+        />
+      </div>
+      <div class="modal-field">
+        <label for="taskAssignee">担当者</label>
+        <select id="taskAssignee" name="assignee_uid" class="modal-input">
+          <option value="">未割当</option>
+          {% for u in (users|default([])) %}
+          <option value="{{ u.uid }}">{{ u.user_name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="modal-field">
+        <label for="taskTag">タグ</label>
+        <select id="taskTag" name="tag" class="modal-input">
+          <option value="frontend">フロントエンド</option>
+          <option value="backend">バックエンド</option>
+          <option value="design">デザイン</option>
+          <option value="doc">ドキュメント</option>
+          <option value="prototype">プロトタイプ</option>
+          <option value="other" selected>その他</option>
+        </select>
+      </div>
+      <div class="modal-field">
+        <label for="taskStatus">ステータス</label>
+        <select id="taskStatus" name="status" class="modal-input">
+          <option value="not_started" selected>未着手</option>
+          <option value="in_progress">作業中</option>
+          <option value="review">レビュー待ち</option>
+          <option value="done">完了</option>
+        </select>
+      </div>
+      <div class="modal-field">
+        <label for="taskDueDate">期日</label>
+        <div class="modal-input-date-wrap">
+          <input
+            type="text"
+            id="taskDueDate"
+            name="due_date"
+            class="modal-input"
+            placeholder="日付を選択"
+            autocomplete="off"
+          />
+          <button type="button" class="modal-input-date-btn" id="taskDueDateToggle" aria-label="カレンダーを開く">
+            <ion-icon name="calendar-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="modal-btn modal-btn-outline create-task-modal-cancel">キャンセル</button>
+        <button type="submit" class="modal-btn modal-btn-primary">追加する</button>
+      </div>
+    </form>
+  </div>
+</div>
