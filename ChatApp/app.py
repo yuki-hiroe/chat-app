@@ -639,6 +639,10 @@ def members_view():
         members = [m for m in members if m['status_raw'] == filter_val]
     return render_template('members.html', uid=uid, members=members, filter_val=filter_val, active_nav='members')
 
+# ヘルスチェック用エンドポイント(ALBのターゲットグループを死活監視)
+@app.route('/health')
+def health():
+    return {'status': 'ok'}, 200
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)

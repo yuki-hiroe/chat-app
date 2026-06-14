@@ -1,12 +1,4 @@
--- RDSでは不要・危険なので、コメントアウト
--- DROP DATABASE chatapp;
--- DROP USER 'testuser';
-
--- CREATE USER 'testuser' IDENTIFIED BY 'testuser';
--- CREATE DATABASE chatapp;
--- USE chatapp
--- GRANT ALL PRIVILEGES ON chatapp.* TO 'testuser';
-
+-- RDS用: init.sql の10行目以降（DROP DATABASE / testuser 作成は含まない）
 CREATE TABLE users (
     uid VARCHAR(255) PRIMARY KEY,
     user_name VARCHAR(255) UNIQUE NOT NULL,
