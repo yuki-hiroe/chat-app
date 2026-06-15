@@ -1,5 +1,5 @@
-# Pythonのイメージを指定
-FROM python:3.11-slim
+# Fargate (X86_64) 向けに amd64 でビルドする（Mac ARM での exec format error 防止）
+FROM --platform=linux/amd64 python:3.11-slim
 # PYTHONDONTWRITEBYTECODEとPYTHONUNBUFFEREDはオプション
 # pycファイル(および__pycache__)の生成を行わないようにする
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -15,7 +15,6 @@ RUN pip install -U pip && \
     pip install -r requirements.txt
 # ソースコードをコンテナにコピー
 COPY ChatApp/ .
-# Flaskのアプリケーションを実行
-# 起動時に CSS バンドルを生成してから Gunicorn 起動
-CMD python -c "from util.assets import bundle_css_files; from app import app; bundle_css_files(app)" && \
-    gunicorn --bind 0.0.0.0:5000 --workers 2 --timeout 120 app:app
+# app.py インポート時に bundle_css_files() が走るため Gunicorn のみ起動
+# shell 形式 CMD は /bin/sh 経由になるため exec form にする
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "2", "--timeout", "120", "app:app"]
